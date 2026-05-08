@@ -2,6 +2,6 @@ flask
 numpy
 pandas
 scikit-learn
-xgboost
+xgboost[cpu]
 catboost
 dill
