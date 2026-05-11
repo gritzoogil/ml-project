@@ -1,1 +1,442 @@
-<h1>Welcome to the home page</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Exam Performance Indicator</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --ink: #0f0e0c;
+            --cream: #f5f0e8;
+            --warm: #e8dfc8;
+            --accent: #c84b2f;
+            --accent2: #2f6dc8;
+            --muted: #8a8070;
+        }
+
+        html, body {
+            height: 100%;
+            background: var(--cream);
+            color: var(--ink);
+            font-family: 'DM Sans', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Subtle grain overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .page {
+            min-height: 100vh;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+        }
+
+        /* Header */
+        header {
+            padding: 2rem 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(15,14,12,0.1);
+        }
+
+        .logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.1rem;
+            letter-spacing: -0.02em;
+            color: var(--ink);
+            text-decoration: none;
+        }
+
+        .logo span { color: var(--accent); }
+
+        nav a {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--muted);
+            text-decoration: none;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+        nav a:hover { color: var(--ink); }
+
+        /* Hero */
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            padding: 5rem 3rem;
+            gap: 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .hero-text { position: relative; }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.78rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+
+        .eyebrow::before {
+            content: '';
+            width: 24px;
+            height: 1px;
+            background: var(--accent);
+        }
+
+        h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2.8rem, 5vw, 4.5rem);
+            line-height: 1.05;
+            letter-spacing: -0.03em;
+            margin-bottom: 1.5rem;
+            color: var(--ink);
+        }
+
+        h1 em {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .hero-desc {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: var(--muted);
+            font-weight: 300;
+            max-width: 420px;
+            margin-bottom: 2.5rem;
+        }
+
+        .cta-group {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: var(--ink);
+            color: var(--cream);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.85rem 1.8rem;
+            border-radius: 2px;
+            letter-spacing: 0.02em;
+            transition: background 0.2s, transform 0.15s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--accent);
+            transform: translateX(-101%);
+            transition: transform 0.25s ease;
+        }
+
+        .btn-primary:hover::after { transform: translateX(0); }
+        .btn-primary span { position: relative; z-index: 1; }
+        .btn-primary svg { position: relative; z-index: 1; transition: transform 0.2s; }
+        .btn-primary:hover svg { transform: translateX(3px); }
+
+        .btn-ghost {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--muted);
+            text-decoration: none;
+            letter-spacing: 0.02em;
+            border-bottom: 1px solid transparent;
+            transition: color 0.2s, border-color 0.2s;
+            padding-bottom: 2px;
+        }
+        .btn-ghost:hover { color: var(--ink); border-color: var(--ink); }
+
+        /* Visual card */
+        .hero-visual {
+            position: relative;
+        }
+
+        .stat-card {
+            background: var(--ink);
+            color: var(--cream);
+            border-radius: 4px;
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            animation: floatCard 6s ease-in-out infinite;
+        }
+
+        @keyframes floatCard {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -40px; right: -40px;
+            width: 160px; height: 160px;
+            border-radius: 50%;
+            background: var(--accent);
+            opacity: 0.15;
+        }
+
+        .stat-card-label {
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            opacity: 0.5;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card-value {
+            font-family: 'DM Serif Display', serif;
+            font-size: 4rem;
+            line-height: 1;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-card-sub {
+            font-size: 0.85rem;
+            opacity: 0.5;
+            margin-bottom: 2rem;
+        }
+
+        .stat-bars { display: flex; flex-direction: column; gap: 0.75rem; }
+
+        .bar-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .bar-label { font-size: 0.78rem; opacity: 0.6; width: 50px; flex-shrink: 0; }
+
+        .bar-track {
+            flex: 1;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 2px;
+            background: var(--accent);
+            animation: barGrow 1.5s ease forwards;
+            transform-origin: left;
+        }
+
+        @keyframes barGrow {
+            from { transform: scaleX(0); }
+            to { transform: scaleX(1); }
+        }
+
+        .bar-val { font-size: 0.78rem; opacity: 0.6; width: 28px; text-align: right; flex-shrink: 0; }
+
+        .floating-tag {
+            position: absolute;
+            background: white;
+            border-radius: 3px;
+            padding: 0.6rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--ink);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            animation: floatTag 5s ease-in-out infinite;
+        }
+
+        @keyframes floatTag {
+            0%, 100% { transform: translateY(0px) rotate(-2deg); }
+            50% { transform: translateY(-6px) rotate(-2deg); }
+        }
+
+        .tag-1 { bottom: -20px; left: -30px; animation-delay: -2s; }
+        .tag-2 { top: -16px; right: -20px; animation-delay: -1s; }
+
+        .tag-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .dot-green { background: #2dc882; }
+        .dot-blue { background: var(--accent2); }
+
+        /* Stats row */
+        .stats-row {
+            background: var(--warm);
+            border-top: 1px solid rgba(15,14,12,0.08);
+            border-bottom: 1px solid rgba(15,14,12,0.08);
+            padding: 2rem 3rem;
+        }
+
+        .stats-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .stat-item { text-align: center; }
+
+        .stat-num {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.2rem;
+            color: var(--ink);
+            display: block;
+        }
+
+        .stat-desc { font-size: 0.82rem; color: var(--muted); margin-top: 0.2rem; }
+
+        /* Footer */
+        footer {
+            padding: 1.5rem 3rem;
+            border-top: 1px solid rgba(15,14,12,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        footer p { font-size: 0.8rem; color: var(--muted); }
+
+        /* Animations */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 0.7s ease forwards;
+        }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.35s; }
+        .delay-4 { animation-delay: 0.5s; }
+        .delay-5 { animation-delay: 0.65s; }
+
+        @media (max-width: 768px) {
+            .hero { grid-template-columns: 1fr; padding: 3rem 1.5rem; }
+            header { padding: 1.5rem; }
+            .hero-visual { display: none; }
+            .stats-inner { grid-template-columns: 1fr; }
+            footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    <header>
+        <a href="/" class="logo">Exam<span>IQ</span></a>
+        <nav>
+            <a href="/predictdata">Try the Predictor →</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-text">
+                <div class="eyebrow fade-up">ML-Powered Insights</div>
+                <h1 class="fade-up delay-1">Predict your <em>math</em> score before the exam.</h1>
+                <p class="hero-desc fade-up delay-2">
+                    Enter a few details about your background and study habits. Our model predicts your expected math performance based on real student data.
+                </p>
+                <div class="cta-group fade-up delay-3">
+                    <a href="/predictdata" class="btn-primary">
+                        <span>Get your prediction</span>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                    <a href="#how" class="btn-ghost">How it works</a>
+                </div>
+            </div>
+
+            <div class="hero-visual fade-up delay-4">
+                <div class="floating-tag tag-2">
+                    <div class="tag-dot dot-blue"></div>
+                    Linear Regression Model
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-label">Predicted Score</div>
+                    <div class="stat-card-value">82</div>
+                    <div class="stat-card-sub">out of 100 · Math</div>
+                    <div class="stat-bars">
+                        <div class="bar-row">
+                            <span class="bar-label">Math</span>
+                            <div class="bar-track"><div class="bar-fill" style="width:82%"></div></div>
+                            <span class="bar-val">82</span>
+                        </div>
+                        <div class="bar-row">
+                            <span class="bar-label">Reading</span>
+                            <div class="bar-track"><div class="bar-fill" style="width:78%; animation-delay:0.2s; background:#888"></div></div>
+                            <span class="bar-val">78</span>
+                        </div>
+                        <div class="bar-row">
+                            <span class="bar-label">Writing</span>
+                            <div class="bar-track"><div class="bar-fill" style="width:74%; animation-delay:0.4s; background:#888"></div></div>
+                            <span class="bar-val">74</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="floating-tag tag-1">
+                    <div class="tag-dot dot-green"></div>
+                    Above average
+                </div>
+            </div>
+        </section>
+
+        <div class="stats-row" id="how">
+            <div class="stats-inner">
+                <div class="stat-item">
+                    <span class="stat-num">7</span>
+                    <p class="stat-desc">Input features analyzed</p>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-num">1000</span>
+                    <p class="stat-desc">Student records trained on</p>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-num">~88%</span>
+                    <p class="stat-desc">Model R² accuracy</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Student Exam Performance Indicator</p>
+        <p>Built with Flask &amp; scikit-learn</p>
+    </footer>
+
+</div>
+</body>
+</html>
